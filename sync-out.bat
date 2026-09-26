@@ -23,6 +23,7 @@ REM ==== AKHIR KONFIGURASI ====
 set "MODE=%~1"
 set "AUTO=0"
 if /i "%MODE%"=="auto" set "AUTO=1"
+set "PHP_BIN=C:\xampp\php"
 
 cd /d "%~dp0"
 
@@ -76,6 +77,15 @@ if errorlevel 8 (
 if "%AUTO%"=="0" echo   OK
 
 if "%AUTO%"=="1" (
+    REM Upload dump ke Google Drive (folder BACKUP-DATABASE) - best effort:
+    REM kalau internet/Drive gagal, backup lokal di E:\sync tetap sah.
+    if exist "%PHP_BIN%\php.exe" (
+        if exist "%~dp0gdrive-backup.php" (
+            call :log "upload ke Google Drive..."
+            "%PHP_BIN%\php.exe" "%~dp0gdrive-backup.php" >nul 2>&1
+            if errorlevel 1 (call :log "upload Drive GAGAL - backup lokal tetap ada") else (call :log "upload Drive OK")
+        )
+    )
     call :log "=== sync-out auto SELESAI ==="
     exit /b 0
 )

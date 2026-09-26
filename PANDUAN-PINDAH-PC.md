@@ -200,6 +200,29 @@ Hapus task         : schtasks /Delete /TN DigitalArchive-BackupHarian /F
 Backup otomatis ini sekaligus jaring pengaman: walau kamu lupa export manual
 sebelum pindah PC, dump kemarin jam 21:00 selalu tersedia di E:\sync.
 
+### 4f. Sinkron otomatis ke Google Drive (tanpa flashdisk)
+
+Setelah dump lokal selesai, mode auto juga menjalankan `gdrive-backup.php`
+yang meng-upload dump ke folder **`BACKUP-DATABASE`** di root Google Drive
+menggunakan kredensial yang sudah ada di `.env` proyek (tidak perlu install
+Google Drive Desktop/rclone). Retensi otomatis: dump Drive lebih tua dari
+30 hari dihapus. Upload ini *best effort* — kalau internet mati, backup
+lokal di E:\sync tetap sah dan log mencatat "upload Drive GAGAL".
+
+Restore dari cloud: buka Drive → folder `BACKUP-DATABASE` → unduh dump
+pilihan → tempatkan sebagai `E:\sync\digital_archive.sql` → jalankan
+`sync-in.bat` seperti biasa. Untuk menjalankan uploader manual:
+
+```bash
+cd C:\xampp\htdocs\digital-archive
+C:\xampp\php\php.exe gdrive-backup.php
+```
+
+Prasyarat (sekali): `curl.cainfo` & `openssl.cafile` di `C:\xampp\php\php.ini`
+harus menunjuk ke `C:\xampp\php\cacert.pem` (sudah diset 26 Sep 2026; kalau
+muncul "cURL error 60" berarti setting ini hilang — unduh ulang cacert.pem
+dari curl.se/ca/cacert.pem lalu arahkan lagi).
+
 ---
 
 ## 5. Git di hari-hari: alur rutin
