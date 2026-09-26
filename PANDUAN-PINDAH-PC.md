@@ -175,6 +175,31 @@ PC baru : sync-in.bat   →  kerja
 
 Jika bukan di E:\, ubah `set "SYNC_DIR=..."` di kedua file.
 
+### 4e. Backup otomatis tiap malam 21:00 (Windows Task Scheduler)
+
+Task `DigitalArchive-BackupHarian` sudah terdaftar di PC ini: tiap hari jam
+21:00 menjalankan `sync-out.bat auto` (mode tanpa pause, mencatat log ke
+`E:\sync\logs\sync-out.log`, dan **menyalakan MySQL sendiri kalau lagi mati**
+— percobaan 2x @25 detik).
+
+Untuk mendaftarkan ulang di PC baru (sekali saja):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File C:\xampp\htdocs\digital-archive\setup-backup-task.ps1
+```
+
+Perintah berguna:
+
+```text
+Uji jalan sekarang : schtasks /Run /TN DigitalArchive-BackupHarian
+Status & jadwal    : schtasks /Query /TN DigitalArchive-BackupHarian /V /FO LIST
+Lihat log          : type E:\sync\logs\sync-out.log
+Hapus task         : schtasks /Delete /TN DigitalArchive-BackupHarian /F
+```
+
+Backup otomatis ini sekaligus jaring pengaman: walau kamu lupa export manual
+sebelum pindah PC, dump kemarin jam 21:00 selalu tersedia di E:\sync.
+
 ---
 
 ## 5. Git di hari-hari: alur rutin
