@@ -303,8 +303,8 @@
 
         .badge-status-menunggu_verifikasi {
             background: #fd7e14;
-            color: #1a1a1a !important;
-            border: 1px solid #e96d05;
+            color: #ffffff !important;
+            border: 1px solid #c85f02;
         }
 
         .badge-status-terverifikasi {
