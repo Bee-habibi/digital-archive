@@ -408,6 +408,153 @@
                 padding: 20px 16px !important;
             }
         }
+
+        /* ===== Mobile-friendly: ponsel & tablet kecil =====
+           Aplikasi ini dirancang tetap nyaman dipakai dari mana saja (HP),
+           bukan hanya di depan komputer/laptop. */
+
+        /* Filter Livewire: form kontrol melebar penuh di layar sempit */
+        @media (max-width: 767.98px) {
+            .livewire-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .livewire-filters .form-control,
+            .livewire-filters .form-select {
+                width: 100%;
+                min-width: 0 !important;
+                max-width: none !important;
+                /* Target sentuh nyaman (rekomendasi aksesibilitas ~44px) */
+                min-height: 44px;
+                font-size: 16px; /* cegah auto-zoom di iOS Safari */
+            }
+
+            .livewire-filters .filter-actions {
+                margin-left: 0 !important; /* .ms-auto dimatikan di HP */
+            }
+
+            .livewire-filters .filter-actions .btn {
+                flex: 1;
+                min-height: 44px;
+            }
+
+            /* Aksi baris (Detail/Download dll.) jadi tombol lebar yang mudah disentuh */
+            .table-card .td-actions .btn {
+                min-height: 38px;
+                padding: 6px 18px;
+            }
+        }
+
+        /* Tabel -> kartu di ponsel (≤767px): tanpa scroll horizontal.
+           Setiap <td> punya data-label yang tampil sebagai keterangan. */
+        @media (max-width: 767.98px) {
+            .table-card thead {
+                display: none;
+            }
+
+            .table-card,
+            .table-card tbody,
+            .table-card tr,
+            .table-card td {
+                display: block;
+                width: 100%;
+            }
+
+            .table-scroll {
+                overflow-x: visible; /* scroll tidak dibutuhkan lagi */
+            }
+
+            .table-card tr {
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                background: var(--bg-card);
+                padding: 10px 14px;
+                margin-bottom: 12px;
+            }
+
+            .table-card td {
+                border: 0;
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .table-card td::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 10.5px;
+                font-weight: 600;
+                letter-spacing: .04em;
+                text-transform: uppercase;
+                color: var(--t-muted);
+                margin-bottom: 1px;
+            }
+
+            /* Kolom pertama (No. Arsip) jadi judul kartu */
+            .table-card td:first-child {
+                padding-bottom: 6px;
+                margin-bottom: 6px;
+                border-bottom: 1px dashed var(--border-soft);
+            }
+
+            .table-card td:first-child::before {
+                color: var(--t-light);
+            }
+
+            .table-card td.td-actions::before {
+                content: none; /* aksi tidak butuh label */
+            }
+
+            .table-card td.td-actions {
+                padding-top: 8px;
+                margin-top: 6px;
+                border-top: 1px dashed var(--border-soft);
+            }
+
+            /* Tabel kecil di dashboard tetap ringkas */
+            main.content .table-sm td {
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            /* Header halaman & baris aksi agar tidak meluber */
+            main.content .d-flex.justify-content-between {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            /* Modal tetap dalam layar (Bootstrap default pun, dijamin di sini) */
+            .modal-dialog {
+                margin: .5rem;
+            }
+
+            /* Paginasi Livewire/Bootstrap enteng di layar kecil */
+            .pagination {
+                flex-wrap: wrap;
+                margin-bottom: 0;
+            }
+
+            .pagination .page-link {
+                min-height: 40px;
+                min-width: 40px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        /* Ponsel sangat kecil (≤380px): badge boleh mengecil sedikit */
+        @media (max-width: 380px) {
+            .badge-status-draft,
+            .badge-status-menunggu_verifikasi,
+            .badge-status-terverifikasi,
+            .badge-status-perlu_perbaikan,
+            .badge-status-diarsipkan {
+                font-size: 11px;
+                padding: 3px 8px;
+            }
+        }
     </style>
 
     <script>

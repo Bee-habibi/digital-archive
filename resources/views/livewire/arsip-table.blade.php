@@ -1,7 +1,7 @@
 <div>
 <div class="card">
     {{-- Filter bar: semua wire:model.live — berubah langsung tanpa reload --}}
-    <div class="d-flex flex-wrap gap-2 mb-3">
+    <div class="d-flex flex-wrap gap-2 mb-3 livewire-filters">
         <input type="search" class="form-control flex-grow-1" style="min-width:220px"
                placeholder="Cari no. arsip / no. dokumen / judul…"
                wire:model.live.debounce.350ms="q">
@@ -36,12 +36,14 @@
             @endforeach
         </select>
 
-        <button type="button" class="btn btn-outline-secondary" wire:click="resetFilter"
-                title="Bersihkan semua filter">↺</button>
+        <div class="d-flex gap-2 ms-auto filter-actions">
+            <button type="button" class="btn btn-outline-secondary" wire:click="resetFilter"
+                    title="Bersihkan semua filter">↺</button>
 
-        <a href="{{ route('archives.create') }}" class="btn btn-primary ms-auto">
-            <i class="bi bi-plus-lg"></i> Tambah Arsip
-        </a>
+            <a href="{{ route('archives.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Tambah Arsip
+            </a>
+        </div>
     </div>
 
     {{-- Indikator loading: muncul saat Livewire sedang refresh --}}
@@ -49,8 +51,10 @@
         <span class="spinner-border spinner-border-sm"></span> Memuat…
     </div>
 
+    {{-- Di layar sempit (≤767px) tabel ini berubah jadi kartu via CSS (layout/app.blade.php);
+         atribut data-label dipakai sebagai label tiap baris kartu. --}}
     <div class="table-scroll">
-        <table class="table mb-0 align-middle">
+        <table class="table table-card mb-0 align-middle">
             <thead class="table-light">
                 <tr>
                     <th>No. Arsip</th><th>Judul</th><th>Kategori</th>
@@ -61,13 +65,13 @@
             <tbody>
             @forelse($archives as $archive)
                 <tr wire:key="arsip-{{ $archive->id }}">
-                    <td class="text-nowrap">{{ $archive->archive_number }}</td>
-                    <td>{{ $archive->title }}</td>
-                    <td>{{ $archive->category?->name }}</td>
-                    @if(auth()->user()->canAccessAllUnits())<td>{{ $archive->unit?->name }}</td>@endif
-                    <td>{{ $archive->year }}</td>
-                    <td><span class="badge badge-status-{{ $archive->status }}">{{ ucwords(str_replace('_',' ',$archive->status)) }}</span></td>
-                    <td><a href="{{ route('archives.show', $archive) }}" class="btn btn-sm btn-outline-primary">Detail</a></td>
+                    <td class="text-nowrap" data-label="No. Arsip">{{ $archive->archive_number }}</td>
+                    <td data-label="Judul">{{ $archive->title }}</td>
+                    <td data-label="Kategori">{{ $archive->category?->name }}</td>
+                    @if(auth()->user()->canAccessAllUnits())<td data-label="Unit">{{ $archive->unit?->name }}</td>@endif
+                    <td data-label="Tahun">{{ $archive->year }}</td>
+                    <td data-label="Status"><span class="badge badge-status-{{ $archive->status }}">{{ ucwords(str_replace('_',' ',$archive->status)) }}</span></td>
+                    <td class="td-actions"><a href="{{ route('archives.show', $archive) }}" class="btn btn-sm btn-outline-primary">Detail</a></td>
                 </tr>
             @empty
                 <tr><td colspan="7" class="text-center text-muted py-4">
@@ -83,7 +87,7 @@
     </div>
 </div>
 
-<div class="mt-3 d-flex justify-content-between align-items-center">
+<div class="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
     <span class="small text-muted">Total: {{ $archives->total() }} arsip</span>
     {{ $archives->links() }}
 </div>
