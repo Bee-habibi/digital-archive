@@ -159,34 +159,21 @@ robocopy C:\xampp\htdocs\digital-archive\storage\app\public E:\sync\storage_publ
 
 > Alternatif: simpan dump SQL + zip `storage/app/public` ke cloud drive (Google Drive — apalagi lu sudah pakai Flysystem Google Drive di proyek ini!) otomatis tiap malam.
 
-### 4d. Cara super gampang: bikin script sync
+### 4d. Script sync sudah disediakan di repo
 
-Bikin `C:\xampp\htdocs\digital-archive\sync-out.bat` (di PC yang mau diexport):
+Dua script sudah ada di root proyek (dan teruji):
 
-```bat
-@echo off
-REM Export DB + file upload ke folder sync (ganti E:\sync sesuai lokasi lu)
-if not exist E:\sync mkdir E:\sync
-C:\xampp\mysql\bin\mysqldump.exe -h 127.0.0.1 -u root digital_archive > E:\sync\digital_archive.sql
-robocopy storage\app\public E:\sync\storage_public //E //NFL //NDL
-echo Selesai! Folder E:\sync siap dibawa pindah.
-pause
+- **`sync-out.bat`** — export dump database + salin `storage/app/public` ke folder sync (`E:\sync`). Jalankan di PC yang datanya paling baru **sebelum pindah kerja**.
+- **`sync-in.bat`** — di PC tujuan: backup dulu keadaan lama ke `backup_before_import\`, baru import dump + file, lalu refresh storage link & cache.
+
+Konfigurasi (lokasi folder sync, kredensial DB) ada di bagian atas masing-masing file. Alur:
+
+```text
+PC lama : sync-out.bat  →  bawa E:\sync (flashdisk / cloud)
+PC baru : sync-in.bat   →  kerja
 ```
 
-dan `sync-in.bat` (di PC tujuan, setelah folder sync tersedia):
-
-```bat
-@echo off
-C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root -e "CREATE DATABASE IF NOT EXISTS digital_archive CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root digital_archive < E:\sync\digital_archive.sql
-robocopy E:\sync\storage_public storage\app\public //E //NFL //NDL
-php artisan storage:link
-echo Data ter-restore!
-pause
-```
-
-> Alur kerja jadi: **pulang dari kantor** → jalankan `sync-out.bat` → bawa folder sync (flashdisk/cloud).
-> **Datang ke kantor** → `sync-in.bat` → kerja. **Sebelum pulang** → `sync-out.bat` lagi → di rumah `sync-in.bat`.
+Jika bukan di E:\, ubah `set "SYNC_DIR=..."` di kedua file.
 
 ---
 
